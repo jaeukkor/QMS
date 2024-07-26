@@ -1,0 +1,24 @@
+package com.qms.receive.dao;
+
+import java.util.List;
+
+import org.mybatis.spring.annotation.MapperScan;
+
+import com.qms.receive.vo.RcvVO;
+
+@MapperScan(basePackages="com.qms.receive.dao")
+public interface ReceiveDao {
+	
+	public int selectTotalRcvCount(RcvVO vo) throws Exception;
+	
+	public List<RcvVO> selectRcvList(RcvVO vo) throws Exception;
+	
+	public List<RcvVO> selectRcvClickList(RcvVO vo) throws Exception; //xml
+	
+	public int delitercv(RcvVO vo) throws Exception ;
+	public int RCVNewInsertAdd(RcvVO vo) throws Exception ;
+	
+	
+
+	
+}

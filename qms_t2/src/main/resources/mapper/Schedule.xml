@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qms.approve.dao.ScheduleDao">
+	<resultMap type="com.qms.approve.vo.ScheduleVO" id="scheduleMap">
+		<result property="scheduleSeq" 				column="SCHEDULE_SEQ"/>
+		<result property="startDt" 				column="START_DT"/>
+		<result property="endDt"				column="END_DT"/>
+		<result property="title" 				column="TITLE"/>
+		<result property="statusYn" 				column="STATUS_YN"/>
+		
+		
+	</resultMap>
+	
+	<select id = "selectScheList" resultMap="scheduleMap">
+			SELECT
+				TITLE,
+				TO_CHAR(START_DT,'DD')START_DT,
+				TO_CHAR(END_DT,'DD')END_DT
+			FROM
+				TB_SCHEDULE_INFO
+			WHERE
+				TO_CHAR(START_DT,'YYYY') = #{scheYear}
+			AND
+				TO_CHAR(START_DT,'MM') = #{scheMonth}
+			AND
+				TO_CHAR(END_DT,'YYYY') = #{scheYear}
+			AND
+				TO_CHAR(END_DT,'MM') = #{scheMonth}
+			
+	</select>
+	<select id ="selectModalScheList" resultMap="scheduleMap">
+			SELECT 
+				TO_CHAR(START_DT,'YYYY-MM-DD') START_DT,
+				TO_CHAR(END_DT, 'YYYY-MM-DD') END_DT,
+				TITLE,
+				STATUS_YN
+			FROM 
+				TB_SCHEDULE_INFO
+			WHERE
+				TO_CHAR(START_DT,'YYYYMMDD') <![CDATA[<=]]> #{scheD}
+			AND 
+				TO_CHAR(END_DT,'YYYYMMDD') <![CDATA[>=]]> #{scheD}			
+	</select>
+</mapper>

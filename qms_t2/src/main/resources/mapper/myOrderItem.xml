@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qms.myCode.dao.myOrderDao">
+		<resultMap type="com.qms.myCode.vo.myOrderItemVO" id="itemMap">
+			<result property="itemCd" column="ITEM_CD"/>
+			<result property="itemName" column="ITEM_NAME"/>
+			<result property="itemType" column="ITEM_TYPE"/>
+			<result property="unitType" column="UNIT_TYPE"/>
+			<result property="regDt" column="REG_DT"/>
+			<result property="subconYn" column="SUBCON_YN"/>
+			
+			
+			<result property="hscode" column="HSCODE"/>
+			<result property="weight" column="WEIGHT"/>
+			<result property="boxQty" column="BOX_QTY"/>
+			<result property="unitPrice" column="UNIT_PRICE"/>
+			<result property="plantLine" column="PLANT_LINE"/>
+			<result property="plantLineName" column="PLANT_LINE_NAME"/>
+			<result property="boxType" column="BOX_TYPE"/>
+			<result property="boxTypeName" column="BOX_TYPE_NAME"/>
+			<result property="location" column="LOCATION"/>
+			<result property="locationName" column="LOCATION_NAME"/>
+			<result property="unitType" column="UNIT_TYPE"/>
+			<result property="unitTypeName" column="UNIT_TYPE_NAME"/>
+			
+			
+			<result property="comCd" column="COM_CD"/>
+			<result property="comName" column="COM_NAME"/>
+			<result property="comGrpCd" column="COM_GRP_CD"/>
+		</resultMap>
+		
+		<select id="selectItemList" resultMap="itemMap">
+				SELECT
+					SUBCON_YN,
+					UNIT_PRICE,
+					BOX_QTY,
+					WEIGHT,
+					HSCODE,
+			        ITEM_CD,
+			        ITEM_NAME,
+			        COM_CD,
+			        PLANT_LINE,
+			        ITEM_TYPE_NAME,
+			        UNIT_TYPE_NAME,
+			        PLANT_LINE_NAME,
+			        UNIT_TYPE,
+			        BOX_TYPE,
+			        BOX_TYPE_NAME,
+			        LOCATION,
+			        LOCATION_NAME,
+			        REG_DT
+			    FROM(
+			    SELECT
+			    	A.SUBCON_YN,
+			    	A.UNIT_PRICE,
+			    	A.BOX_QTY,
+			    	A.BOX_TYPE,
+			    	A.WEIGHT,
+			    	A.HSCODE,
+			        A.ITEM_CD,
+			        A.ITEM_NAME,
+			        A.PLANT_LINE,
+			        A.UNIT_TYPE,
+			        A.LOCATION,
+			        E.COM_CD,
+			        E.COM_NAME AS ITEM_TYPE_NAME,
+			        F.COM_NAME AS UNIT_TYPE_NAME,
+			        B.COM_NAME AS PLANT_LINE_NAME,
+			        D.COM_NAME AS BOX_TYPE_NAME,
+			        C.COM_NAME AS LOCATION_NAME,
+			        TO_CHAR(A.REG_DT,'YYYYMMDD')REG_DT
+			    FROM 
+			        TB_ITEM_INFO A,
+			        TB_COM_CODE B,
+			        TB_COM_CODE C,
+			        TB_COM_CODE D,
+			        TB_COM_CODE E,
+			        TB_COM_CODE F
+			    WHERE
+			        A.PLANT_LINE = B.COM_CD
+			    AND
+			        B.COM_GRP_CD = 'IT04'
+			    AND
+			        A.LOCATION = C.COM_CD
+			    AND
+			        C.COM_GRP_CD = 'IT05'
+			    AND 
+			        A.BOX_TYPE = D.COM_CD
+			    AND
+			        D.COM_GRP_CD = 'IT03'
+			    AND
+			        A.ITEM_TYPE = E.COM_CD
+			    AND
+			        E.COM_GRP_CD = 'IT01'
+			    AND
+			        A.UNIT_TYPE = F.COM_CD
+			    AND
+			        F.COM_GRP_CD = 'IT02'
+			    <if test="itemCd !='' and itemCd !=null">
+			    	AND A.ITEM_CD = #{itemCd}
+			    </if>
+			    <if test="itemName !='' and itemName !=null">
+			    	AND A.ITEM_NAME LIKE '%' || #{itemName} || '%'
+			    </if>
+			    <if test="itemType !='' and itemType !=null">
+			    	AND A.ITEM_TYPE = #{itemType}
+			    </if>
+			    ORDER BY ITEM_CD)
+		</select>
+		
+		<select id="itemTypeSetting" resultMap="itemMap">
+				SELECT 
+			        COM_GRP_CD,
+			        COM_CD,
+			        COM_NAME
+			    FROM 
+			        TB_COM_CODE
+			    WHERE
+			        SUBSTR(COM_GRP_CD,1,2) = 'IT'
+		</select>
+		
+</mapper>
